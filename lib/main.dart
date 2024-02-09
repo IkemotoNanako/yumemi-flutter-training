@@ -9,10 +9,92 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
+    final textTheme = Theme.of(context).textTheme;
+    return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Text('Hello World!'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: height / 10,
+              ),
+              SizedBox(
+                width: width / 2,
+                height: width / 2,
+                child: const Placeholder(),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16, bottom: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: width / 4,
+                      child: Center(
+                        child: Text(
+                          '** ℃',
+                          style: textTheme.labelLarge!.copyWith(
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: width / 4,
+                      child: Center(
+                        child: Text(
+                          '** ℃',
+                          style: textTheme.labelLarge!.copyWith(
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 80,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: width / 4,
+                    child: Center(
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'close',
+                          style: textTheme.labelLarge!.copyWith(
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: width / 4,
+                    child: Center(
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'reload',
+                          style: textTheme.labelLarge!.copyWith(
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
