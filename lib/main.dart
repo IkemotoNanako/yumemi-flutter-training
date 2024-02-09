@@ -10,7 +10,6 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
 
     final textTheme = Theme.of(context).textTheme;
     return MaterialApp(
@@ -19,8 +18,8 @@ class MainApp extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                height: height / 10,
+              const SizedBox(
+                height: 120,
               ),
               SizedBox(
                 width: width / 2,
