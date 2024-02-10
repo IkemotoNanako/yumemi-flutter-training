@@ -15,29 +15,65 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
             children: [
-              const SizedBox(
-                height: 120,
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: width / 2,
+                    height: width / 2,
+                    child: const Placeholder(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16, bottom: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: width / 4,
+                          child: Center(
+                            child: Text(
+                              '** ℃',
+                              style: textTheme.labelLarge!.copyWith(
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: width / 4,
+                          child: Center(
+                            child: Text(
+                              '** ℃',
+                              style: textTheme.labelLarge!.copyWith(
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(
-                width: width / 2,
-                height: width / 2,
-                child: const Placeholder(),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16, bottom: 16),
+              Positioned(
+                bottom: -80,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
                       width: width / 4,
                       child: Center(
-                        child: Text(
-                          '** ℃',
-                          style: textTheme.labelLarge!.copyWith(
-                            color: Colors.blue,
+                        child: TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            'close',
+                            style: textTheme.labelLarge!.copyWith(
+                              color: Colors.blue,
+                            ),
                           ),
                         ),
                       ),
@@ -45,52 +81,19 @@ class MainApp extends StatelessWidget {
                     SizedBox(
                       width: width / 4,
                       child: Center(
-                        child: Text(
-                          '** ℃',
-                          style: textTheme.labelLarge!.copyWith(
-                            color: Colors.red,
+                        child: TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            'reload',
+                            style: textTheme.labelLarge!.copyWith(
+                              color: Colors.blue,
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(
-                height: 80,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: width / 4,
-                    child: Center(
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          'close',
-                          style: textTheme.labelLarge!.copyWith(
-                            color: Colors.blue,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: width / 4,
-                    child: Center(
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          'reload',
-                          style: textTheme.labelLarge!.copyWith(
-                            color: Colors.blue,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
