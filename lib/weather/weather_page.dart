@@ -46,19 +46,6 @@ extension WeatherConditionExtension on WeatherCondition {
   }
 }
 
-WeatherCondition convertStringToWeatherCondition(String conditionString) {
-  switch (conditionString) {
-    case 'sunny':
-      return WeatherCondition.sunny;
-    case 'cloudy':
-      return WeatherCondition.cloudy;
-    case 'rainy':
-      return WeatherCondition.rainy;
-    default:
-      return WeatherCondition.other;
-  }
-}
-
 class WeatherPage extends StatefulWidget {
   const WeatherPage({super.key});
 
@@ -78,7 +65,7 @@ class _WeatherPageState extends State<WeatherPage> {
     void fetchWeather() {
       final weather = _yumemiWeather.fetchSimpleWeather();
       setState(() {
-        _weatherCondition = convertStringToWeatherCondition(weather);
+        _weatherCondition = WeatherCondition.values.byName(weather);
       });
     }
 
