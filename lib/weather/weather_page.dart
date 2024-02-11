@@ -1,6 +1,26 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
+
+class Weather {
+  Weather({
+    required this.weatherCondition,
+    required this.minTemperature,
+    required this.maxTemperature,
+  });
+
+  Weather.fromJson(dynamic json)
+      : weatherCondition = WeatherCondition.values
+            .byName(json['weather_condition'].toString()),
+        minTemperature = json['min_temperature'] as int,
+        maxTemperature = json['max_temperature'] as int;
+
+  WeatherCondition weatherCondition;
+  int? minTemperature;
+  int? maxTemperature;
+}
 
 enum WeatherCondition {
   sunny,
@@ -55,7 +75,11 @@ class WeatherPage extends StatefulWidget {
 
 class _WeatherPageState extends State<WeatherPage> {
   final YumemiWeather _yumemiWeather = YumemiWeather();
-  WeatherCondition _weatherCondition = WeatherCondition.other;
+  Weather _weather = Weather(
+    weatherCondition: WeatherCondition.other,
+    minTemperature: null,
+    maxTemperature: null,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -64,9 +88,16 @@ class _WeatherPageState extends State<WeatherPage> {
 
     Future<void> fetchWeather() async {
       try {
-        final weather = _yumemiWeather.fetchThrowsWeather('tokyo');
+        const jsonString = '''
+{
+    "area": "tokyo",
+    "date": "2020-04-01T12:00:00+09:00"
+}''';
+        final weatherString = _yumemiWeather.fetchWeather(jsonString);
+        final weatherMap = json.decode(weatherString);
+
         setState(() {
-          _weatherCondition = WeatherCondition.values.byName(weather);
+          _weather = Weather.fromJson(weatherMap);
         });
       } on YumemiWeatherError catch (_) {
         await showDialog<void>(
@@ -92,7 +123,7 @@ class _WeatherPageState extends State<WeatherPage> {
                 SizedBox(
                   width: width / 2,
                   height: width / 2,
-                  child: _weatherCondition.icon,
+                  child: _weather.weatherCondition.icon,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 16, bottom: 16),
@@ -103,7 +134,7 @@ class _WeatherPageState extends State<WeatherPage> {
                         width: width / 4,
                         child: Center(
                           child: Text(
-                            '** ℃',
+                            '${_weather.minTemperature ?? '**'} ℃',
                             style: textTheme.labelLarge!.copyWith(
                               color: Colors.blue,
                             ),
@@ -114,7 +145,7 @@ class _WeatherPageState extends State<WeatherPage> {
                         width: width / 4,
                         child: Center(
                           child: Text(
-                            '** ℃',
+                            '${_weather.maxTemperature ?? '**'} ℃',
                             style: textTheme.labelLarge!.copyWith(
                               color: Colors.red,
                             ),
