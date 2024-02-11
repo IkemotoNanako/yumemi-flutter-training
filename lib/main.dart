@@ -10,17 +10,19 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-
     final textTheme = Theme.of(context).textTheme;
+
     return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Stack(
-            alignment: Alignment.center,
-            clipBehavior: Clip.none,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Flexible(
+                child: Container(),
+              ),
               Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
                     width: width / 2,
@@ -59,38 +61,44 @@ class MainApp extends StatelessWidget {
                   ),
                 ],
               ),
-              Positioned(
-                bottom: -80,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+              Flexible(
+                child: Column(
                   children: [
-                    SizedBox(
-                      width: width / 4,
-                      child: Center(
-                        child: TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            'close',
-                            style: textTheme.labelLarge!.copyWith(
-                              color: Colors.blue,
-                            ),
-                          ),
-                        ),
-                      ),
+                    const SizedBox(
+                      height: 80,
                     ),
-                    SizedBox(
-                      width: width / 4,
-                      child: Center(
-                        child: TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            'reload',
-                            style: textTheme.labelLarge!.copyWith(
-                              color: Colors.blue,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: width / 4,
+                          child: Center(
+                            child: TextButton(
+                              onPressed: () {},
+                              child: Text(
+                                'close',
+                                style: textTheme.labelLarge!.copyWith(
+                                  color: Colors.blue,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                        SizedBox(
+                          width: width / 4,
+                          child: Center(
+                            child: TextButton(
+                              onPressed: () {},
+                              child: Text(
+                                'reload',
+                                style: textTheme.labelLarge!.copyWith(
+                                  color: Colors.blue,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
