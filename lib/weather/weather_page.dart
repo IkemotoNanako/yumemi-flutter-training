@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 enum WeatherCondition {
   sunny,
   cloudy,
   rainy,
+  other,
 }
 
 extension WeatherConditionExtension on WeatherCondition {
@@ -16,6 +18,30 @@ extension WeatherConditionExtension on WeatherCondition {
         return 'cloudy';
       case WeatherCondition.rainy:
         return 'rainy';
+      case WeatherCondition.other:
+        return '';
+    }
+  }
+
+  Widget get icon {
+    switch (this) {
+      case WeatherCondition.sunny:
+        return SvgPicture.asset(
+          'assets/sunny.svg',
+          semanticsLabel: 'sunny',
+        );
+      case WeatherCondition.cloudy:
+        return SvgPicture.asset(
+          'assets/cloudy.svg',
+          semanticsLabel: 'cloudy',
+        );
+      case WeatherCondition.rainy:
+        return SvgPicture.asset(
+          'assets/rainy.svg',
+          semanticsLabel: 'rainy',
+        );
+      case WeatherCondition.other:
+        return const Placeholder();
     }
   }
 }
@@ -29,7 +55,7 @@ WeatherCondition convertStringToWeatherCondition(String conditionString) {
     case 'rainy':
       return WeatherCondition.rainy;
     default:
-      return WeatherCondition.sunny;
+      return WeatherCondition.other;
   }
 }
 
@@ -41,20 +67,20 @@ class WeatherPage extends StatefulWidget {
 }
 
 class _WeatherPageState extends State<WeatherPage> {
+  final YumemiWeather _yumemiWeather = YumemiWeather();
+  WeatherCondition _weatherCondition = WeatherCondition.other;
+
   @override
   Widget build(BuildContext context) {
-    final yumemiWeather = YumemiWeather();
-    var weatherCondition = WeatherCondition.sunny;
-    void fetchWeather() {
-      setState(() {
-        final weather = yumemiWeather.fetchSimpleWeather();
-        weatherCondition = convertStringToWeatherCondition(weather);
-        print(weatherCondition);
-      });
-    }
-
     final width = MediaQuery.of(context).size.width;
     final textTheme = Theme.of(context).textTheme;
+
+    void fetchWeather() {
+      final weather = _yumemiWeather.fetchSimpleWeather();
+      setState(() {
+        _weatherCondition = convertStringToWeatherCondition(weather);
+      });
+    }
 
     return Scaffold(
       body: Center(
@@ -70,7 +96,7 @@ class _WeatherPageState extends State<WeatherPage> {
                 SizedBox(
                   width: width / 2,
                   height: width / 2,
-                  child: const Placeholder(),
+                  child: _weatherCondition.icon,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 16, bottom: 16),
