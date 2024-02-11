@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_training/other/green_page.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 enum WeatherCondition {
@@ -143,7 +144,9 @@ class _WeatherPageState extends State<WeatherPage> {
                         width: width / 4,
                         child: Center(
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
                             child: Text(
                               'close',
                               style: textTheme.labelLarge!.copyWith(
