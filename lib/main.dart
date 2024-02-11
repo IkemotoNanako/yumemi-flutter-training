@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yumemi_weather/yumemi_weather.dart';
 
 void main() {
   runApp(const MainApp());
@@ -88,7 +89,12 @@ class MainApp extends StatelessWidget {
                           width: width / 4,
                           child: Center(
                             child: TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                final yumemiWeather = YumemiWeather();
+                                final weatherCondition =
+                                    yumemiWeather.fetchSimpleWeather();
+                                print('Weather Condition: $weatherCondition');
+                              },
                               child: Text(
                                 'reload',
                                 style: textTheme.labelLarge!.copyWith(
