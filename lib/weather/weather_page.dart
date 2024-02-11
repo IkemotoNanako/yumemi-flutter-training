@@ -11,7 +11,7 @@ class Weather {
     required this.maxTemperature,
   });
 
-  Weather.fromJson(dynamic json)
+  Weather.fromJson(Map<String, dynamic> json)
       : weatherCondition = WeatherCondition.values
             .byName(json['weather_condition'].toString()),
         minTemperature = json['min_temperature'] as int,
@@ -94,7 +94,7 @@ class _WeatherPageState extends State<WeatherPage> {
     "date": "2020-04-01T12:00:00+09:00"
 }''';
         final weatherString = _yumemiWeather.fetchWeather(jsonString);
-        final weatherMap = json.decode(weatherString);
+        final weatherMap = json.decode(weatherString) as Map<String, dynamic>;
 
         setState(() {
           _weather = Weather.fromJson(weatherMap);
