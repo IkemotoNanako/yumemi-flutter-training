@@ -62,11 +62,20 @@ class _WeatherPageState extends State<WeatherPage> {
     final width = MediaQuery.of(context).size.width;
     final textTheme = Theme.of(context).textTheme;
 
-    void fetchWeather() {
-      final weather = _yumemiWeather.fetchSimpleWeather();
-      setState(() {
-        _weatherCondition = WeatherCondition.values.byName(weather);
-      });
+    Future<void> fetchWeather() async {
+      try {
+        final weather = _yumemiWeather.fetchThrowsWeather('tokyo');
+        setState(() {
+          _weatherCondition = WeatherCondition.values.byName(weather);
+        });
+      } on YumemiWeatherError catch (_) {
+        await showDialog<void>(
+          context: context,
+          builder: (_) {
+            return const ErrorAlertDialog();
+          },
+        );
+      }
     }
 
     return Scaffold(
@@ -164,6 +173,25 @@ class _WeatherPageState extends State<WeatherPage> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class ErrorAlertDialog extends StatelessWidget {
+  const ErrorAlertDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('仮のテキスト'),
+      actions: <Widget>[
+        GestureDetector(
+          child: const Text('OK'),
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
     );
   }
 }
