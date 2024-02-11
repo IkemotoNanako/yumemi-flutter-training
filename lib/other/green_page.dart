@@ -12,11 +12,13 @@ class _GreenPageState extends State<GreenPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.endOfFrame
-        .then((_) => Future.delayed(Duration(milliseconds: 500)).then((_) {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => WeatherPage()));
-            }));
+    WidgetsBinding.instance.endOfFrame.then(
+      (_) => Future.delayed(const Duration(milliseconds: 500)).then((_) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const WeatherPage()),
+        );
+      }),
+    );
   }
 
   @override
