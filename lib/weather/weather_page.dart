@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_training/weather/weather_class.dart';
-import 'package:flutter_training/weather/weather_condition_enum.dart';
+import 'package:flutter_training/weather/enum/weather_condition_enum.dart';
+import 'package:flutter_training/weather/model/weather_class.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 class WeatherPage extends StatefulWidget {

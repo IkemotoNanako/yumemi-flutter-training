@@ -1,4 +1,4 @@
-import 'package:flutter_training/weather/weather_condition_enum.dart';
+import 'package:flutter_training/weather/enum/weather_condition_enum.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'weather_class.g.dart';
