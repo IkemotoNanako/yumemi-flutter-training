@@ -8,7 +8,9 @@ part of 'weather_class.dart';
 
 Weather _$WeatherFromJson(Map<String, dynamic> json) => Weather(
       weatherCondition: $enumDecodeNullable(
-          _$WeatherConditionEnumMap, json['weather_condition']),
+        _$WeatherConditionEnumMap,
+        json['weather_condition'],
+      ),
       minTemperature: json['min_temperature'] as int?,
       maxTemperature: json['max_temperature'] as int?,
     );

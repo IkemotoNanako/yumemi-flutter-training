@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_training/weather/enum/weather_condition_enum.dart';
 import 'package:flutter_training/weather/model/weather_class.dart';
+import 'package:flutter_training/weather/model/weather_request_class.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 class WeatherPage extends StatefulWidget {
@@ -27,12 +28,10 @@ class _WeatherPageState extends State<WeatherPage> {
 
     Future<void> fetchWeather() async {
       try {
-        const jsonString = '''
-{
-    "area": "tokyo",
-    "date": "2020-04-01T12:00:00+09:00"
-}''';
-        final weatherString = _yumemiWeather.fetchWeather(jsonString);
+        final request =
+            WeatherRequest(area: 'tokyo', date: '2020-04-01T12:00:00+09:00');
+        final requestString = jsonEncode(request.toJson());
+        final weatherString = _yumemiWeather.fetchWeather(requestString);
         final weatherJson = json.decode(weatherString) as Map<String, dynamic>;
 
         setState(() {
