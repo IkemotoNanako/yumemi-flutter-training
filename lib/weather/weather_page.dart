@@ -129,7 +129,7 @@ class _WeatherPageState extends State<WeatherPage> {
                         Flexible(
                           child: Center(
                             child: TextButton(
-                              onPressed: () {},
+                              onPressed: () => Navigator.of(context).pop(),
                               child: Text(
                                 'close',
                                 style: textTheme.labelLarge?.copyWith(
