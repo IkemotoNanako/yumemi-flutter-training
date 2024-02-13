@@ -3,46 +3,49 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 enum WeatherCondition {
-  sunny,
-  cloudy,
-  rainy,
-  other,
-}
+  sunny(label: 'sunny'),
+  cloudy(label: 'cloudy'),
+  rainy(label: 'rainy'),
+  other(label: ''),
+  ;
 
-extension WeatherConditionExtension on WeatherCondition {
-  String get name {
-    switch (this) {
-      case WeatherCondition.sunny:
-        return 'sunny';
-      case WeatherCondition.cloudy:
-        return 'cloudy';
-      case WeatherCondition.rainy:
-        return 'rainy';
-      case WeatherCondition.other:
-        return '';
-    }
-  }
+  const WeatherCondition({
+    required this.label,
+  });
+
+  final String label;
 
   Widget get icon {
     switch (this) {
       case WeatherCondition.sunny:
         return SvgPicture.asset(
           'assets/sunny.svg',
-          semanticsLabel: 'sunny',
+          semanticsLabel: label,
         );
       case WeatherCondition.cloudy:
         return SvgPicture.asset(
           'assets/cloudy.svg',
-          semanticsLabel: 'cloudy',
+          semanticsLabel: label,
         );
       case WeatherCondition.rainy:
         return SvgPicture.asset(
           'assets/rainy.svg',
-          semanticsLabel: 'rainy',
+          semanticsLabel: label,
         );
       case WeatherCondition.other:
         return const Placeholder();
     }
+  }
+}
+
+extension EnumByName<T extends Enum> on Iterable<T> {
+  T? byNameOrNull(String? name) {
+    for (final value in this) {
+      if (value.name == name) {
+        return value;
+      }
+    }
+    return null;
   }
 }
 
@@ -57,16 +60,17 @@ class _WeatherPageState extends State<WeatherPage> {
   final YumemiWeather _yumemiWeather = YumemiWeather();
   WeatherCondition _weatherCondition = WeatherCondition.other;
 
+  void _fetchWeather() {
+    final weather = _yumemiWeather.fetchSimpleWeather();
+    setState(() {
+      _weatherCondition = WeatherCondition.values.byNameOrNull(weather) ??
+          WeatherCondition.other;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-
-    void fetchWeather() {
-      final weather = _yumemiWeather.fetchSimpleWeather();
-      setState(() {
-        _weatherCondition = WeatherCondition.values.byName(weather);
-      });
-    }
 
     return Scaffold(
       body: Center(
@@ -138,7 +142,7 @@ class _WeatherPageState extends State<WeatherPage> {
                         Flexible(
                           child: Center(
                             child: TextButton(
-                              onPressed: fetchWeather,
+                              onPressed: _fetchWeather,
                               child: Text(
                                 'reload',
                                 style: textTheme.labelLarge?.copyWith(
