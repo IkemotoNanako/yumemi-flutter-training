@@ -9,101 +9,96 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     final textTheme = Theme.of(context).textTheme;
 
     return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Container(),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: width / 2,
-                    height: width / 2,
-                    child: const Placeholder(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16, bottom: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: width / 4,
-                          child: Center(
-                            child: Text(
-                              '** ℃',
-                              style: textTheme.labelLarge!.copyWith(
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: width / 4,
-                          child: Center(
-                            child: Text(
-                              '** ℃',
-                              style: textTheme.labelLarge!.copyWith(
-                                color: Colors.red,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Flexible(
-                child: Column(
+          child: FractionallySizedBox(
+            widthFactor: 0.5,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Flexible(
+                  child: SizedBox.expand(),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(
-                      height: 80,
+                    const AspectRatio(
+                      aspectRatio: 1,
+                      child: Placeholder(),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: width / 4,
-                          child: Center(
-                            child: TextButton(
-                              onPressed: () {},
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16, bottom: 16),
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: Center(
                               child: Text(
-                                'close',
-                                style: textTheme.labelLarge!.copyWith(
+                                '** ℃',
+                                style: textTheme.labelLarge?.copyWith(
                                   color: Colors.blue,
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          width: width / 4,
-                          child: Center(
-                            child: TextButton(
-                              onPressed: () {},
+                          Flexible(
+                            child: Center(
                               child: Text(
-                                'reload',
-                                style: textTheme.labelLarge!.copyWith(
-                                  color: Colors.blue,
+                                '** ℃',
+                                style: textTheme.labelLarge?.copyWith(
+                                  color: Colors.red,
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                Flexible(
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 80,
+                      ),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Center(
+                              child: TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  'close',
+                                  style: textTheme.labelLarge?.copyWith(
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Flexible(
+                            child: Center(
+                              child: TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  'reload',
+                                  style: textTheme.labelLarge?.copyWith(
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
