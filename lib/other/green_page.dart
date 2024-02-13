@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_training/weather/weather_page.dart';
 
@@ -13,14 +15,15 @@ class _GreenPageState extends State<GreenPage> {
   void initState() {
     super.initState();
     Future(() async {
-      await WidgetsBinding.instance.endOfFrame.then(
-        (_) =>
-            Future<void>.delayed(const Duration(milliseconds: 500)).then((_) {
-          Navigator.of(context).push(
-            MaterialPageRoute<void>(builder: (context) => const WeatherPage()),
-          );
-        }),
-      );
+      await WidgetsBinding.instance.endOfFrame.then((_) async {
+        await Future<void>.delayed(const Duration(milliseconds: 500));
+        if (!mounted) {
+          return;
+        }
+        await Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (context) => const WeatherPage()),
+        );
+      });
     });
   }
 
