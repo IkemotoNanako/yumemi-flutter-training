@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_training/weather/weather_page.dart';
 
@@ -8,12 +10,15 @@ mixin afterFirstLayoutMixin<T extends StatefulWidget> on State<T> {
   void initState() {
     super.initState();
     Future(() async {
-      await WidgetsBinding.instance.endOfFrame.then(
-        (_) =>
-            Future<void>.delayed(const Duration(milliseconds: 500)).then((_) {
-          afterFirstLayout();
-        }),
-      );
+      await WidgetsBinding.instance.endOfFrame.then((_) async {
+        await Future<void>.delayed(const Duration(milliseconds: 500));
+        if (!mounted) {
+          return;
+        }
+        await Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (context) => const WeatherPage()),
+        );
+      });
     });
   }
 }
