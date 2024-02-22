@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
@@ -67,11 +68,13 @@ class _WeatherPageState extends State<WeatherPage> {
         _weatherCondition = WeatherCondition.values.byNameOrNull(weather) ??
             WeatherCondition.other;
       });
-    } on YumemiWeatherError catch (_) {
+    } on YumemiWeatherError catch (e) {
       await showDialog<void>(
         context: context,
         builder: (_) {
-          return const ErrorAlertDialog();
+          return ErrorAlertDialog(
+            message: e.message,
+          );
         },
       );
     }
@@ -175,12 +178,18 @@ class _WeatherPageState extends State<WeatherPage> {
 }
 
 class ErrorAlertDialog extends StatelessWidget {
-  const ErrorAlertDialog({super.key});
+  const ErrorAlertDialog({
+    required this.message,
+    super.key,
+  });
+
+  final String message;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('仮のテキスト'),
+      title: const Text('エラー'),
+      content: Text(message),
       actions: <Widget>[
         GestureDetector(
           child: const Text('OK'),
@@ -190,5 +199,22 @@ class ErrorAlertDialog extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(StringProperty('message', message));
+  }
+}
+
+extension on YumemiWeatherError {
+  String get message {
+    switch (this) {
+      case YumemiWeatherError.invalidParameter:
+        return '無効なパラメータです';
+      case YumemiWeatherError.unknown:
+        return '不明なエラーです';
+    }
   }
 }
