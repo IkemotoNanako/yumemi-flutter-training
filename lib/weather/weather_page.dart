@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
@@ -60,12 +61,23 @@ class _WeatherPageState extends State<WeatherPage> {
   final YumemiWeather _yumemiWeather = YumemiWeather();
   WeatherCondition _weatherCondition = WeatherCondition.other;
 
-  void _fetchWeather() {
-    final weather = _yumemiWeather.fetchSimpleWeather();
-    setState(() {
-      _weatherCondition = WeatherCondition.values.byNameOrNull(weather) ??
-          WeatherCondition.other;
-    });
+  Future<void> _fetchWeather() async {
+    try {
+      final weather = _yumemiWeather.fetchThrowsWeather('tokyo');
+      setState(() {
+        _weatherCondition = WeatherCondition.values.byNameOrNull(weather) ??
+            WeatherCondition.other;
+      });
+    } on YumemiWeatherError catch (e) {
+      await showDialog<void>(
+        context: context,
+        builder: (_) {
+          return ErrorAlertDialog(
+            message: e.message,
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -162,5 +174,47 @@ class _WeatherPageState extends State<WeatherPage> {
         ),
       ),
     );
+  }
+}
+
+class ErrorAlertDialog extends StatelessWidget {
+  const ErrorAlertDialog({
+    required this.message,
+    super.key,
+  });
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('エラー'),
+      content: Text(message),
+      actions: <Widget>[
+        GestureDetector(
+          child: const Text('OK'),
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(StringProperty('message', message));
+  }
+}
+
+extension on YumemiWeatherError {
+  String get message {
+    switch (this) {
+      case YumemiWeatherError.invalidParameter:
+        return '無効なパラメータです';
+      case YumemiWeatherError.unknown:
+        return '不明なエラーです';
+    }
   }
 }
