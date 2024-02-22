@@ -60,12 +60,21 @@ class _WeatherPageState extends State<WeatherPage> {
   final YumemiWeather _yumemiWeather = YumemiWeather();
   WeatherCondition _weatherCondition = WeatherCondition.other;
 
-  void _fetchWeather() {
-    final weather = _yumemiWeather.fetchSimpleWeather();
-    setState(() {
-      _weatherCondition = WeatherCondition.values.byNameOrNull(weather) ??
-          WeatherCondition.other;
-    });
+  Future<void> _fetchWeather() async {
+    try {
+      final weather = _yumemiWeather.fetchThrowsWeather('tokyo');
+      setState(() {
+        _weatherCondition = WeatherCondition.values.byNameOrNull(weather) ??
+            WeatherCondition.other;
+      });
+    } on YumemiWeatherError catch (_) {
+      await showDialog<void>(
+        context: context,
+        builder: (_) {
+          return const ErrorAlertDialog();
+        },
+      );
+    }
   }
 
   @override
