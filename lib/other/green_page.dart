@@ -3,14 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_training/weather/weather_page.dart';
 
-class GreenPage extends StatefulWidget {
-  const GreenPage({super.key});
+mixin AfterFirstLayoutMixin<T extends StatefulWidget> on State<T> {
+  Future<void> afterFirstLayout();
 
-  @override
-  State<GreenPage> createState() => _GreenPageState();
-}
-
-class _GreenPageState extends State<GreenPage> {
   @override
   void initState() {
     super.initState();
@@ -20,11 +15,29 @@ class _GreenPageState extends State<GreenPage> {
         if (!mounted) {
           return;
         }
-        await Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (context) => const WeatherPage()),
-        );
+        await afterFirstLayout();
       });
     });
+  }
+}
+
+class GreenPage extends StatefulWidget {
+  const GreenPage({super.key});
+
+  @override
+  State<GreenPage> createState() => _GreenPageState();
+}
+
+class _GreenPageState extends State<GreenPage> with AfterFirstLayoutMixin {
+  @override
+  Future<void> afterFirstLayout() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) {
+          return const WeatherPage();
+        },
+      ),
+    );
   }
 
   @override
