@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_training/weather/enum/weather_condition_enum.dart';
 import 'package:flutter_training/weather/model/weather_class.dart';
@@ -21,127 +22,121 @@ class _WeatherPageState extends State<WeatherPage> {
     maxTemperature: null,
   );
 
+  Future<void> _fetchWeather() async {
+    try {
+      final request =
+          WeatherRequest(area: 'tokyo', date: '2020-04-01T12:00:00+09:00');
+      final requestString = jsonEncode(request.toJson());
+      final weatherString = _yumemiWeather.fetchWeather(requestString);
+      final weatherJson = json.decode(weatherString) as Map<String, dynamic>;
+
+      setState(() {
+        _weather = Weather.fromJson(weatherJson);
+      });
+    } on YumemiWeatherError catch (e) {
+      await showDialog<void>(
+        context: context,
+        builder: (_) {
+          return ErrorAlertDialog(
+            message: e.message,
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     final textTheme = Theme.of(context).textTheme;
-
-    Future<void> fetchWeather() async {
-      try {
-        final request =
-            WeatherRequest(area: 'tokyo', date: '2020-04-01T12:00:00+09:00');
-        final requestString = jsonEncode(request.toJson());
-        final weatherString = _yumemiWeather.fetchWeather(requestString);
-        final weatherJson = json.decode(weatherString) as Map<String, dynamic>;
-
-        setState(() {
-          _weather = Weather.fromJson(weatherJson);
-        });
-      } on YumemiWeatherError catch (_) {
-        await showDialog<void>(
-          context: context,
-          builder: (_) {
-            return const ErrorAlertDialog();
-          },
-        );
-      }
-    }
 
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(
-              child: Container(),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: width / 2,
-                  height: width / 2,
-                  child: _weather.weatherCondition == null
-                      ? const Placeholder()
-                      : _weather.weatherCondition!.icon,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16, bottom: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: width / 4,
-                        child: Center(
-                          child: Text(
-                            '${_weather.minTemperature ?? '**'} ℃',
-                            style: textTheme.labelLarge!.copyWith(
-                              color: Colors.blue,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: width / 4,
-                        child: Center(
-                          child: Text(
-                            '${_weather.maxTemperature ?? '**'} ℃',
-                            style: textTheme.labelLarge!.copyWith(
-                              color: Colors.red,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Flexible(
-              child: Column(
+        child: FractionallySizedBox(
+          widthFactor: 0.5,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Flexible(
+                child: SizedBox.expand(),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 80,
+                  AspectRatio(
+                    aspectRatio: 1,
+                    child:
+                        _weather.weatherCondition?.icon ?? const Placeholder(),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: width / 4,
-                        child: Center(
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16, bottom: 16),
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: Center(
                             child: Text(
-                              'close',
-                              style: textTheme.labelLarge!.copyWith(
+                              '${_weather.minTemperature ?? '**'} ℃',
+                              style: textTheme.labelLarge?.copyWith(
                                 color: Colors.blue,
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: width / 4,
-                        child: Center(
-                          child: TextButton(
-                            onPressed: fetchWeather,
+                        Flexible(
+                          child: Center(
                             child: Text(
-                              'reload',
-                              style: textTheme.labelLarge!.copyWith(
-                                color: Colors.blue,
+                              '${_weather.maxTemperature ?? '**'} ℃',
+                              style: textTheme.labelLarge?.copyWith(
+                                color: Colors.red,
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
-            ),
-          ],
+              Flexible(
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 80,
+                    ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Center(
+                            child: TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text(
+                                'close',
+                                style: textTheme.labelLarge?.copyWith(
+                                  color: Colors.blue,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          child: Center(
+                            child: TextButton(
+                              onPressed: _fetchWeather,
+                              child: Text(
+                                'reload',
+                                style: textTheme.labelLarge?.copyWith(
+                                  color: Colors.blue,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -149,12 +144,18 @@ class _WeatherPageState extends State<WeatherPage> {
 }
 
 class ErrorAlertDialog extends StatelessWidget {
-  const ErrorAlertDialog({super.key});
+  const ErrorAlertDialog({
+    required this.message,
+    super.key,
+  });
+
+  final String message;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('仮のテキスト'),
+      title: const Text('エラー'),
+      content: Text(message),
       actions: <Widget>[
         GestureDetector(
           child: const Text('OK'),
@@ -164,5 +165,22 @@ class ErrorAlertDialog extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(StringProperty('message', message));
+  }
+}
+
+extension on YumemiWeatherError {
+  String get message {
+    switch (this) {
+      case YumemiWeatherError.invalidParameter:
+        return '無効なパラメータです';
+      case YumemiWeatherError.unknown:
+        return '不明なエラーです';
+    }
   }
 }
