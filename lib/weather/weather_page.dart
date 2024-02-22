@@ -14,11 +14,11 @@ class Weather {
 
   Weather.fromJson(Map<String, dynamic> json)
       : weatherCondition = WeatherCondition.values
-            .byName(json['weather_condition'].toString()),
+            .byNameOrNull(json['weather_condition'].toString()),
         minTemperature = json['min_temperature'] as int,
         maxTemperature = json['max_temperature'] as int;
 
-  WeatherCondition weatherCondition;
+  WeatherCondition? weatherCondition;
   int? minTemperature;
   int? maxTemperature;
 }
@@ -27,7 +27,6 @@ enum WeatherCondition {
   sunny(label: 'sunny'),
   cloudy(label: 'cloudy'),
   rainy(label: 'rainy'),
-  other(label: ''),
   ;
 
   const WeatherCondition({
@@ -53,8 +52,6 @@ enum WeatherCondition {
           'assets/rainy.svg',
           semanticsLabel: label,
         );
-      case WeatherCondition.other:
-        return const Placeholder();
     }
   }
 }
@@ -80,7 +77,7 @@ class WeatherPage extends StatefulWidget {
 class _WeatherPageState extends State<WeatherPage> {
   final YumemiWeather _yumemiWeather = YumemiWeather();
   Weather _weather = Weather(
-    weatherCondition: WeatherCondition.other,
+    weatherCondition: null,
     minTemperature: null,
     maxTemperature: null,
   );
@@ -129,7 +126,8 @@ class _WeatherPageState extends State<WeatherPage> {
                 children: [
                   AspectRatio(
                     aspectRatio: 1,
-                    child: _weather.weatherCondition.icon,
+                    child:
+                        _weather.weatherCondition?.icon ?? const Placeholder(),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 16, bottom: 16),
