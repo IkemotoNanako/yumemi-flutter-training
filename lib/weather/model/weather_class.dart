@@ -3,12 +3,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'weather_class.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class Weather {
   Weather({
-    required this.weatherCondition,
-    required this.minTemperature,
-    required this.maxTemperature,
+    this.weatherCondition,
+    this.minTemperature,
+    this.maxTemperature,
   });
 
   factory Weather.fromJson(Map<String, dynamic> json) =>
@@ -16,12 +16,9 @@ class Weather {
 
   Map<String, dynamic> toJson() => _$WeatherToJson(this);
 
-  @JsonKey(name: 'weather_condition')
   final WeatherCondition? weatherCondition;
 
-  @JsonKey(name: 'min_temperature')
   final int? minTemperature;
 
-  @JsonKey(name: 'max_temperature')
   final int? maxTemperature;
 }

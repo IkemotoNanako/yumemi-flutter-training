@@ -9,6 +9,13 @@ class WeatherRequest {
     required this.date,
   });
 
+  factory WeatherRequest.sample() {
+    return WeatherRequest(
+      area: 'tokyo',
+      date: '2020-04-01T12:00:00+09:00',
+    );
+  }
+
   factory WeatherRequest.fromJson(Map<String, dynamic> json) =>
       _$WeatherRequestFromJson(json);
 

@@ -16,16 +16,11 @@ class WeatherPage extends StatefulWidget {
 
 class _WeatherPageState extends State<WeatherPage> {
   final YumemiWeather _yumemiWeather = YumemiWeather();
-  Weather _weather = Weather(
-    weatherCondition: null,
-    minTemperature: null,
-    maxTemperature: null,
-  );
+  Weather _weather = Weather();
 
   Future<void> _fetchWeather() async {
     try {
-      final request =
-          WeatherRequest(area: 'tokyo', date: '2020-04-01T12:00:00+09:00');
+      final request = WeatherRequest.sample();
       final requestString = jsonEncode(request.toJson());
       final weatherString = _yumemiWeather.fetchWeather(requestString);
       final weatherJson = json.decode(weatherString) as Map<String, dynamic>;
