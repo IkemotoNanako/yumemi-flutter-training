@@ -1,13 +1,32 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
+class Weather {
+  Weather({
+    required this.weatherCondition,
+    required this.minTemperature,
+    required this.maxTemperature,
+  });
+
+  Weather.fromJson(Map<String, dynamic> json)
+      : weatherCondition = WeatherCondition.values
+            .byNameOrNull(json['weather_condition'].toString()),
+        minTemperature = json['min_temperature'] as int,
+        maxTemperature = json['max_temperature'] as int;
+
+  WeatherCondition? weatherCondition;
+  int? minTemperature;
+  int? maxTemperature;
+}
+
 enum WeatherCondition {
   sunny(label: 'sunny'),
   cloudy(label: 'cloudy'),
   rainy(label: 'rainy'),
-  other(label: ''),
   ;
 
   const WeatherCondition({
@@ -33,8 +52,6 @@ enum WeatherCondition {
           'assets/rainy.svg',
           semanticsLabel: label,
         );
-      case WeatherCondition.other:
-        return const Placeholder();
     }
   }
 }
@@ -59,14 +76,24 @@ class WeatherPage extends StatefulWidget {
 
 class _WeatherPageState extends State<WeatherPage> {
   final YumemiWeather _yumemiWeather = YumemiWeather();
-  WeatherCondition _weatherCondition = WeatherCondition.other;
+  Weather _weather = Weather(
+    weatherCondition: null,
+    minTemperature: null,
+    maxTemperature: null,
+  );
 
   Future<void> _fetchWeather() async {
     try {
-      final weather = _yumemiWeather.fetchThrowsWeather('tokyo');
+      const jsonString = '''
+{
+    "area": "tokyo",
+    "date": "2020-04-01T12:00:00+09:00"
+}''';
+      final weatherString = _yumemiWeather.fetchWeather(jsonString);
+      final weatherMap = json.decode(weatherString) as Map<String, dynamic>;
+
       setState(() {
-        _weatherCondition = WeatherCondition.values.byNameOrNull(weather) ??
-            WeatherCondition.other;
+        _weather = Weather.fromJson(weatherMap);
       });
     } on YumemiWeatherError catch (e) {
       await showDialog<void>(
@@ -99,7 +126,8 @@ class _WeatherPageState extends State<WeatherPage> {
                 children: [
                   AspectRatio(
                     aspectRatio: 1,
-                    child: _weatherCondition.icon,
+                    child:
+                        _weather.weatherCondition?.icon ?? const Placeholder(),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 16, bottom: 16),
@@ -108,7 +136,7 @@ class _WeatherPageState extends State<WeatherPage> {
                         Flexible(
                           child: Center(
                             child: Text(
-                              '** ℃',
+                              '${_weather.minTemperature ?? '**'} ℃',
                               style: textTheme.labelLarge?.copyWith(
                                 color: Colors.blue,
                               ),
@@ -118,7 +146,7 @@ class _WeatherPageState extends State<WeatherPage> {
                         Flexible(
                           child: Center(
                             child: Text(
-                              '** ℃',
+                              '${_weather.maxTemperature ?? '**'} ℃',
                               style: textTheme.labelLarge?.copyWith(
                                 color: Colors.red,
                               ),
