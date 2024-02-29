@@ -8,13 +8,15 @@ part 'weather_page_controller.g.dart';
 @riverpod
 class WeatherPageController extends _$WeatherPageController {
   @override
-  WeatherState build() {
+  Future<WeatherState> build() async {
     return WeatherState(weather: Weather());
   }
 
-  void fetchWeather() {
-    final weather = ref.read(weatherRepositoryProvider);
-
-    state = state.copyWith(weather: weather);
+  Future<void> fetchWeather() async {
+    final weatherRepository = ref.watch(weatherRepositoryProvider);
+    state = await AsyncValue.guard(() async {
+      final weather = weatherRepository.fetchWeather();
+      return WeatherState(weather: weather);
+    });
   }
 }

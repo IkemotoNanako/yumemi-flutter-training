@@ -37,7 +37,20 @@ class WeatherPage extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
 
     final controller = ref.watch(weatherPageControllerProvider.notifier);
-    final state = ref.watch(weatherPageControllerProvider);
+    final state = ref.watch(weatherPageControllerProvider).value;
+    ref.listen(weatherPageControllerProvider, (previous, next) async {
+      await next.maybeWhen(
+        error: (err, stack) async {
+          await showDialog<void>(
+            context: context,
+            builder: (context) => ErrorAlertDialog(
+              message: (err as YumemiWeatherError).message,
+            ),
+          );
+        },
+        orElse: () {},
+      );
+    });
 
     return Scaffold(
       body: Center(
@@ -54,7 +67,7 @@ class WeatherPage extends ConsumerWidget {
                 children: [
                   AspectRatio(
                     aspectRatio: 1,
-                    child: state.weather.weatherCondition?.icon ??
+                    child: state?.weather.weatherCondition?.icon ??
                         const Placeholder(),
                   ),
                   Padding(
@@ -64,7 +77,7 @@ class WeatherPage extends ConsumerWidget {
                         Flexible(
                           child: Center(
                             child: Text(
-                              '${state.weather.minTemperature ?? '**'} ℃',
+                              '${state?.weather.minTemperature ?? '**'} ℃',
                               style: textTheme.labelLarge?.copyWith(
                                 color: Colors.blue,
                               ),
@@ -74,7 +87,7 @@ class WeatherPage extends ConsumerWidget {
                         Flexible(
                           child: Center(
                             child: Text(
-                              '${state.weather.maxTemperature ?? '**'} ℃',
+                              '${state?.weather.maxTemperature ?? '**'} ℃',
                               style: textTheme.labelLarge?.copyWith(
                                 color: Colors.red,
                               ),

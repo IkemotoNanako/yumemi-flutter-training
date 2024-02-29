@@ -7,12 +7,12 @@ part of 'weather_page_controller.dart';
 // **************************************************************************
 
 String _$weatherPageControllerHash() =>
-    r'4f162c66e1afcfd7d92331741123b5d6c8857fdc';
+    r'd66adb5c1e4f102b52704957b8340bec349132da';
 
 /// See also [WeatherPageController].
 @ProviderFor(WeatherPageController)
-final weatherPageControllerProvider =
-    AutoDisposeNotifierProvider<WeatherPageController, WeatherState>.internal(
+final weatherPageControllerProvider = AutoDisposeAsyncNotifierProvider<
+    WeatherPageController, WeatherState>.internal(
   WeatherPageController.new,
   name: r'weatherPageControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,6 +22,6 @@ final weatherPageControllerProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$WeatherPageController = AutoDisposeNotifier<WeatherState>;
+typedef _$WeatherPageController = AutoDisposeAsyncNotifier<WeatherState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
