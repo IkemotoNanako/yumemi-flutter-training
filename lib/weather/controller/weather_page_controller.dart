@@ -13,7 +13,7 @@ class WeatherPageController extends _$WeatherPageController {
   }
 
   void fetchWeather() {
-    final weather = ref.watch(weatherRepositoryProvider);
+    final weather = ref.read(weatherRepositoryProvider);
 
     state = state.copyWith(weather: weather);
   }
