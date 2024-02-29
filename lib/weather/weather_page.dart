@@ -1,48 +1,43 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_training/weather/enum/weather_condition_enum.dart';
-import 'package:flutter_training/weather/model/weather_class.dart';
-import 'package:flutter_training/weather/model/weather_request_class.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_training/weather/controller/weather_page_controller.dart';
+import 'package:flutter_training/weather/domain/weather_condition_enum.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
-class WeatherPage extends StatefulWidget {
+class WeatherPage extends ConsumerWidget {
   const WeatherPage({super.key});
 
-  @override
-  State<WeatherPage> createState() => _WeatherPageState();
-}
+  // final YumemiWeather _yumemiWeather = YumemiWeather();
+  // Weather _weather = Weather();
 
-class _WeatherPageState extends State<WeatherPage> {
-  final YumemiWeather _yumemiWeather = YumemiWeather();
-  Weather _weather = Weather();
+  // Future<void> _fetchWeather() async {
+  //   try {
+  //     final request = WeatherRequest.sample();
+  //     final requestString = jsonEncode(request.toJson());
+  //     final weatherString = _yumemiWeather.fetchWeather(requestString);
+  //     final weatherJson = json.decode(weatherString) as Map<String, dynamic>;
 
-  Future<void> _fetchWeather() async {
-    try {
-      final request = WeatherRequest.sample();
-      final requestString = jsonEncode(request.toJson());
-      final weatherString = _yumemiWeather.fetchWeather(requestString);
-      final weatherJson = json.decode(weatherString) as Map<String, dynamic>;
-
-      setState(() {
-        _weather = Weather.fromJson(weatherJson);
-      });
-    } on YumemiWeatherError catch (e) {
-      await showDialog<void>(
-        context: context,
-        builder: (_) {
-          return ErrorAlertDialog(
-            message: e.message,
-          );
-        },
-      );
-    }
-  }
+  //     setState(() {
+  //       _weather = Weather.fromJson(weatherJson);
+  //     });
+  //   } on YumemiWeatherError catch (e) {
+  //     await showDialog<void>(
+  //       context: context,
+  //       builder: (_) {
+  //         return ErrorAlertDialog(
+  //           message: e.message,
+  //         );
+  //       },
+  //     );
+  //   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
+
+    final controller = ref.watch(weatherPageControllerProvider.notifier);
+    final state = ref.watch(weatherPageControllerProvider);
 
     return Scaffold(
       body: Center(
@@ -59,8 +54,8 @@ class _WeatherPageState extends State<WeatherPage> {
                 children: [
                   AspectRatio(
                     aspectRatio: 1,
-                    child:
-                        _weather.weatherCondition?.icon ?? const Placeholder(),
+                    child: state.weather.weatherCondition?.icon ??
+                        const Placeholder(),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 16, bottom: 16),
@@ -69,7 +64,7 @@ class _WeatherPageState extends State<WeatherPage> {
                         Flexible(
                           child: Center(
                             child: Text(
-                              '${_weather.minTemperature ?? '**'} ℃',
+                              '${state.weather.minTemperature ?? '**'} ℃',
                               style: textTheme.labelLarge?.copyWith(
                                 color: Colors.blue,
                               ),
@@ -79,7 +74,7 @@ class _WeatherPageState extends State<WeatherPage> {
                         Flexible(
                           child: Center(
                             child: Text(
-                              '${_weather.maxTemperature ?? '**'} ℃',
+                              '${state.weather.maxTemperature ?? '**'} ℃',
                               style: textTheme.labelLarge?.copyWith(
                                 color: Colors.red,
                               ),
@@ -115,7 +110,7 @@ class _WeatherPageState extends State<WeatherPage> {
                         Flexible(
                           child: Center(
                             child: TextButton(
-                              onPressed: _fetchWeather,
+                              onPressed: controller.fetchWeather,
                               child: Text(
                                 'reload',
                                 style: textTheme.labelLarge?.copyWith(
